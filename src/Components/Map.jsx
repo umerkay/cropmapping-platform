@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { GoogleMap, LoadScript, Rectangle } from '@react-google-maps/api';
 import Controls from './Controls';
 import Insights from './Insights';
+import { getTimestamps } from '../Services/TileService';
 
 const containerStyle = {
     width: '100%',
@@ -11,8 +12,8 @@ const containerStyle = {
 };
 
 const center = {
-    lat: 30,
-    lng: 69
+    lat: 48.89473605846484,
+    lng: -122.66479524436673
 };
 
 const rectangleOptions = {
@@ -23,19 +24,25 @@ const rectangleOptions = {
     strokeWeight: 2,
 };
 
-const imgs = ["/output_image.png"]
-const imageBounds = [{
-    north: 28.021667455423074,  // Top latitude (from conversion)
-    south: 27.034136567742728,  // Bottom latitude (from conversion)
-    east: 69.09840173726721,   // Right longitude (from conversion)
-    west: 67.9823586865616,   // Left longitude (from conversion), 
-}]
+// const imgs = ["/output_image.png"]
+// const imageBounds = [{
+//     north: 28.021667455423074,  // Top latitude (from conversion)
+//     south: 27.034136567742728,  // Bottom latitude (from conversion)
+//     east: 69.09840173726721,   // Right longitude (from conversion)
+//     west: 67.9823586865616,   // Left longitude (from conversion), 
+// }]
 
-function App() {
+const libraries = ['drawing'];
+
+function App({ mode, setMode }) {
     const [rectangleBounds, setRectangleBounds] = useState(null);
     const [rectangle, setRectangle] = useState(null);
     const mapRef = useRef(null);
     const drawingManagerRef = useRef(null);
+    const [tiles, setTiles] = useState([]);
+    const [metaData, setMetaData] = useState({});
+    const [overlays, setOverlays] = useState([]);
+    const [mousePosition, setMousePosition] = useState({ lat: 0, lng: 0 });
 
     const onLoad = useCallback((map) => {
         mapRef.current = map;
@@ -62,15 +69,13 @@ function App() {
             drawingManagerRef.current.setMap(null); // Hide drawing manager after drawing
         });
 
-        // Load image overlay
-        for (let i = 0; i < imgs.length; i++) {
-            const overlay = new window.google.maps.GroundOverlay(
-                imgs[i],
-                imageBounds[i]
-            );
+        window.google.maps.event.addListener(map, "mousemove", function (event) {
+            // Get latitude and longitude of the mouse position
+            var lat = event.latLng.lat();
+            var lng = event.latLng.lng();
+            setMousePosition({ lat, lng });
+        });
 
-            overlay.setMap(map);
-        }
     }, []);
 
     const resetRect = () => {
@@ -82,9 +87,55 @@ function App() {
         }
     };
 
+    useEffect(() => {
+
+        if (overlays.length > 0) {
+            overlays.forEach((overlay) => {
+                overlay.setMap(null);
+            });
+        }
+        setOverlays([]);
+        // Load image overlay
+        // console.log(tiles);
+        for (let tile of tiles) {
+            // if (tiles.length === 0) {
+            // return;
+            // }
+            // const tile = tiles[0];
+            const overlay = new window.google.maps.GroundOverlay(
+                `http://localhost:5000/map/data/${metaData.name}/${tile[0]}`,
+                {
+                    north: tile[1],
+                    south: tile[2],
+                    east: tile[3],
+                    west: tile[4]
+                }
+            );
+            overlay.setMap(mapRef.current);
+            setOverlays((prev) => [...prev, overlay]);
+        }
+
+    }, [tiles]);
+
+    useEffect(() => {
+        if (metaData.showMap === false) {
+            if (overlays.length > 0) {
+                overlays.forEach((overlay) => {
+                    overlay.setMap(null);
+                });
+            }
+        } else if (metaData.showMap === true) {
+            if (overlays.length > 0) {
+                overlays.forEach((overlay) => {
+                    overlay.setMap(mapRef.current);
+                });
+            }
+        }
+    }, [metaData.showMap]);
+
     return (
-        <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS} libraries={['drawing']}>
-            <Controls rectangleBounds={rectangleBounds} resetRect={resetRect} />
+        <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS} libraries={libraries}>
+            <Controls mousePosition={mousePosition} setMetaData={setMetaData} mode={mode} setMode={setMode} setTiles={setTiles} rectangleBounds={rectangleBounds} resetRect={resetRect} />
             <div id='map'>
                 <GoogleMap
                     mapContainerStyle={containerStyle}
@@ -102,7 +153,7 @@ function App() {
                     )}
                 </GoogleMap>
             </div>
-            <Insights />
+            <Insights metaData={metaData} />
         </LoadScript>
     );
 }

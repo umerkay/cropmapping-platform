@@ -4,8 +4,6 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #101010;
 
   // color: #0c0c0c;
   // background-color: #ffffff;
@@ -22,7 +20,13 @@
   --code-font-size: 14px;
   --code-line-height: 1.4;
   --scroll-bar-color: #3d3d3d;
-  --scroll-bar-bg-color: #2e2e2e00;
+  --scroll-bar-bg-color: #19191900;
+}
+
+:root .light {
+  --scroll-bar-color: #e7e7e7;
+  --scroll-bar-bg-color: #e1e1e100;
+
 }
 
 pre {
@@ -96,9 +100,20 @@ body {
   align-items: center;
   width: 100%;
   height: 100%;
+
+  &.light {
+    color: #0c0c0c;
+    background-color: #ffffff;
+  }
+
+  &.dark {
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #101010;
+  }
 }
 
-.controls, .insights {
+.controls,
+.insights {
   width: 350px;
   padding: 1rem;
   height: 100%;
@@ -152,7 +167,6 @@ body {
     width: 100%;
     outline: none;
 
-
     &:hover {
       background-color: #0c0c0c;
     }
@@ -202,13 +216,18 @@ body {
 
   .bounds {
     font-size: 0.75rem;
-    background-color: #0c0c0c;
+    background-color: #00000061;
     border-radius: 0.5rem;
     padding: 0.3rem;
     color: #bbbbbb;
   }
 
   padding-right: 0rem;
+}
+
+.light .bounds {
+  color: black;
+  background-color: #00000017;
 }
 
 .insights {
@@ -218,16 +237,40 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     font-size: 0.8rem;
+
     .crop {
       display: flex;
       gap: 0.5rem;
       align-items: center;
       height: 1.5rem;
+
       .color {
         width: 0.5rem;
         height: 1rem;
         border-radius: 100rem;
       }
     }
+  }
+
+  .overlayInfo {
+    font-size: 0.8rem;
+  }
+}
+
+.light select {
+  background-color: #ececec;
+  color: #0c0c0c;
+
+  &:hover {
+    background-color: #dedede;
+  }
+
+  &:active {
+    background-color: #e0e0e0;
+  }
+
+  &:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
   }
 }

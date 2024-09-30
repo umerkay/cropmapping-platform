@@ -17,7 +17,8 @@ const cropColors = {
     "Other": "#00CED1"  // Dark turquoise
 };
 
-function Insights() {
+function Insights({ metaData }) {
+    const { name, description, model, source } = metaData;
     return (
         <div className="insights">
             <div className="title">
@@ -36,6 +37,14 @@ function Insights() {
                         ))
                     }
                 </div>
+                {
+                    metaData?.name && (<><h3>Overlay Info</h3>
+                    <div className="overlayInfo">
+                        <p><strong>{name}:</strong> {description}</p>
+                        <p><strong>Model:</strong> {model}</p>
+                        <p><strong>Source:</strong> {source}</p>
+                    </div>
+                    </>)}
             </div>
         </div>
     );
