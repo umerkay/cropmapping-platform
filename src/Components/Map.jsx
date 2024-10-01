@@ -12,8 +12,8 @@ const containerStyle = {
 };
 
 const center = {
-    lat: 48.89473605846484,
-    lng: -122.66479524436673
+    lat: 30,
+    lng: 70,
 };
 
 const rectangleOptions = {
@@ -111,6 +111,7 @@ function App({ mode, setMode }) {
                     west: tile[4]
                 }
             );
+            // overlay.setOpacity(0.8)
             overlay.setMap(mapRef.current);
             setOverlays((prev) => [...prev, overlay]);
         }
