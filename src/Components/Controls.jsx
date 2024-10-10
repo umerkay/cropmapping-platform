@@ -95,7 +95,7 @@ function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, s
                     checked={mode === "dark"}
                     onChange={() => setMode(mode === "dark" ? "light" : "dark")}
                 />
-                <h3>AgriData PK</h3>
+                <h3>AgroData PK</h3>
             </div>
             <div className="content">
                 <p>
