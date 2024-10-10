@@ -1,17 +1,18 @@
 import { Check, Download, Map, RectangleHorizontalIcon, Stars, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { getTileInfo, getTimestamps } from "../Services/TileService";
+import { getTileInfo, getTimestamps, generateMap } from "../Services/TileService"; // import generateMap
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import ToggleControl from "./ToggleControl";
 
 function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, setMode, setMetaData }) {
 
     const [timestamps, setTimestamps] = useState([]);
+    const [isGenerating, setIsGenerating] = useState(false); // state to track if the map is being generated
 
     const [selected, setSelected] = useState({
         timestamp: "",
-        month: "",
-        year: "",
+        // month: "",  // commented out month
+        // year: "",   // commented out year
         showMap: true
     });
 
@@ -62,6 +63,30 @@ function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, s
         )
     }, [selected.showMap]);
 
+    // Function to handle map generation
+    const handleGenerateMap = async () => {
+        if (!rectangleBounds) return;
+
+        setIsGenerating(true);  // start loading state
+
+        try {
+            const boundingBox = {
+                min_lat: rectangleBounds.south,
+                min_lon: rectangleBounds.west,
+                max_lat: rectangleBounds.north,
+                max_lon: rectangleBounds.east
+            };
+
+            const data = await generateMap(boundingBox);
+            console.log('Map generated successfully:', data);
+
+            // You can update the UI based on the generated map response here
+        } catch (error) {
+            console.error('Error generating map:', error);
+        } finally {
+            setIsGenerating(false);  // end loading state
+        }
+    };
 
     return (
         <div className="controls">
@@ -104,6 +129,9 @@ function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, s
                     )
                 }
                 <h3>Generate</h3>
+
+                {/* Commented out the month and year selection */}
+                {/* 
                 <label htmlFor="month" className="label">Select Month:</label>
                 <select name="month" id="month" onChange={select}>
                     <option value="1">January</option>
@@ -127,12 +155,15 @@ function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, s
                     <option value="2023">2023</option>
                     <option value="2024">2024</option>
                 </select>
+                */}
 
                 <button
-                    disabled={true}
+                    onClick={handleGenerateMap}
+                    disabled={!rectangleBounds || isGenerating}  // disable if no bounds or generating
                 >
-                    <Stars />
-                    Generate Map</button>
+                    {isGenerating ? <span>Generating...</span> : <><Stars /> Generate Map</>}
+                </button>
+
                 {
                     rectangleBounds ? (<>
                         <h3>Bounding Box</h3>
@@ -143,10 +174,12 @@ function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, s
                         </div>
                         <button disabled={!rectangleBounds} onClick={resetRect}>
                             <RectangleHorizontalIcon />
-                            Reset Bounds</button>
+                            Reset Bounds
+                        </button>
                         <button disabled={!rectangleBounds}>
                             <Download />
-                            Download Labels</button>
+                            Download Labels
+                        </button>
 
                     </>
                     ) : null

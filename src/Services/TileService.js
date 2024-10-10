@@ -59,5 +59,40 @@ async function getTileInfo(timestamp) {
     }
 }
 
+/**
+ * Sends a request to generate a map tile for a given bounding box.
+ * Sends a POST request to /map/generate with bounding box coordinates.
+ * @param {Object} boundingBox - Bounding box coordinates {min_lon, min_lat, max_lon, max_lat}.
+ * @returns {Promise<Object>} - Returns a Promise that resolves to the generated tile information or rejects with an error message.
+ */
+async function generateMap(boundingBox) {
+    if (!boundingBox || !boundingBox.min_lon || !boundingBox.min_lat || !boundingBox.max_lon || !boundingBox.max_lat) {
+        showErrorToast("Valid bounding box coordinates are required!");
+        throw new Error("Valid bounding box coordinates are required!");
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/generate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                bounding_box: [boundingBox.min_lon, boundingBox.min_lat, boundingBox.max_lon, boundingBox.max_lat]
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to generate map tile: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;  // Contains tile_name, output_png, and output_json
+    } catch (error) {
+        showErrorToast(error.message);
+        throw error;
+    }
+}
+
 // Export the functions for use in other scripts
-export { getTimestamps, getTileInfo };
+export { getTimestamps, getTileInfo, generateMap };
