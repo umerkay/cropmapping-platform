@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-const API_BASE_URL = 'http://localhost:5000/map'; // Base URL for the map-related API endpoints
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/map`; // Base URL for the map-related API endpoints
 
 // Function to show Toastify notifications for errors
 function showErrorToast(message) {
@@ -22,7 +22,12 @@ function showErrorToast(message) {
  */
 async function getTimestamps() {
     try {
-        const response = await fetch(`${API_BASE_URL}/timestamps`);
+        const response = await fetch(`${API_BASE_URL}/timestamps`, {
+            method: "GET",
+            headers: new Headers({
+                "ngrok-skip-browser-warning": "69420",
+            }),
+        });
         if (!response.ok) {
             throw new Error(`Failed to fetch timestamps: ${response.statusText}`);
         }
@@ -47,7 +52,12 @@ async function getTileInfo(timestamp) {
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/tileinfo?timestamp=${timestamp}`);
+        const response = await fetch(`${API_BASE_URL}/tileinfo?timestamp=${timestamp}`, {
+            method: "GET",
+            headers: new Headers({
+                "ngrok-skip-browser-warning": "69420",
+            }),
+        });
         if (!response.ok) {
             throw new Error(`Failed to fetch tile info: ${response.statusText}`);
         }
@@ -70,12 +80,12 @@ async function generateMap(boundingBox) {
         showErrorToast("Valid bounding box coordinates are required!");
         throw new Error("Valid bounding box coordinates are required!");
     }
-
     try {
         const response = await fetch(`${API_BASE_URL}/generate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                "ngrok-skip-browser-warning": "69420",
             },
             body: JSON.stringify({
                 bounding_box: [boundingBox.min_lon, boundingBox.min_lat, boundingBox.max_lon, boundingBox.max_lat]

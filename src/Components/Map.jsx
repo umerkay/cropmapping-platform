@@ -103,7 +103,7 @@ function App({ mode, setMode }) {
             // }
             // const tile = tiles[0];
             const overlay = new window.google.maps.GroundOverlay(
-                `http://localhost:5000/map/data/${metaData.name}/${tile[0]}`,
+                `${import.meta.env.VITE_API_URL}map/data/${metaData.name}/${tile[0]}`,
                 {
                     north: tile[1],
                     south: tile[2],
