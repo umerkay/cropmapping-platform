@@ -88,35 +88,54 @@ function App({ mode, setMode }) {
     };
 
     useEffect(() => {
-
         if (overlays.length > 0) {
             overlays.forEach((overlay) => {
                 overlay.setMap(null);
             });
         }
         setOverlays([]);
-        // Load image overlay
-        // console.log(tiles);
-        for (let tile of tiles) {
-            // if (tiles.length === 0) {
-            // return;
-            // }
-            // const tile = tiles[0];
-            const overlay = new window.google.maps.GroundOverlay(
-                `${import.meta.env.VITE_API_URL}map/data/${metaData.name}/${tile[0]}`,
-                {
-                    north: tile[1],
-                    south: tile[2],
-                    east: tile[3],
-                    west: tile[4]
-                }
-            );
-            // overlay.setOpacity(0.8)
-            overlay.setMap(mapRef.current);
-            setOverlays((prev) => [...prev, overlay]);
-        }
 
+        // Load image overlay
+        const loadOverlay = async () => {
+            for (let tile of tiles) {
+                const imageUrl = `${import.meta.env.VITE_API_URL}map/data/${metaData.name}/${tile[0]}`;
+
+                // Fetch the image with custom header
+                const response = await fetch(imageUrl, {
+                    method: 'GET',
+                    headers: {
+                        'ngrok-skip-browser-warning': 'true' // Custom header to bypass the warning
+                    }
+                });
+
+                if (response.ok) {
+                    // Create blob URL from response
+                    const imageBlob = await response.blob();
+                    const imageObjectURL = URL.createObjectURL(imageBlob);
+
+                    console.log('Image loaded:', imageObjectURL);
+
+                    // Create the GroundOverlay with the blob URL
+                    const overlay = new window.google.maps.GroundOverlay(
+                        imageObjectURL, // Use blob URL
+                        {
+                            north: tile[1],
+                            south: tile[2],
+                            east: tile[3],
+                            west: tile[4]
+                        }
+                    );
+                    overlay.setMap(mapRef.current);
+                    setOverlays((prev) => [...prev, overlay]);
+                } else {
+                    console.error('Failed to load image overlay');
+                }
+            }
+        };
+
+        loadOverlay();
     }, [tiles]);
+
 
     useEffect(() => {
         if (metaData.showMap === false) {
