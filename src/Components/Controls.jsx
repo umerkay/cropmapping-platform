@@ -4,6 +4,11 @@ import { getTileInfo, getTimestamps, generateMap } from "../Services/TileService
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import ToggleControl from "./ToggleControl";
 
+const fetchTimestamps = async (setTimestamps) => {
+    const timestamps = await getTimestamps();
+    setTimestamps(timestamps);
+};
+
 function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, setMode, setMetaData }) {
 
     const [timestamps, setTimestamps] = useState([]);
@@ -17,12 +22,7 @@ function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, s
     });
 
     useEffect(() => {
-        const fetchTimestamps = async () => {
-            const timestamps = await getTimestamps();
-            setTimestamps(timestamps);
-        };
-
-        fetchTimestamps();
+        fetchTimestamps(setTimestamps);
     }, []);
 
     const fetchTiles = async () => {
@@ -79,6 +79,7 @@ function Controls({ mousePosition, rectangleBounds, resetRect, setTiles, mode, s
 
             const data = await generateMap(boundingBox);
             console.log('Map generated successfully:', data);
+            fetchTimestamps(setTimestamps);
 
             // You can update the UI based on the generated map response here
         } catch (error) {
