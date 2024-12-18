@@ -26,7 +26,7 @@ function Insights({ metaData }) {
                 <h3>Insights</h3>
             </div>
             <div className="content">
-                <h3>Crop Type Key</h3>
+                {/* <h3>Crop Type Key</h3>
                 <div className="cropKeys">
                     {
                         Object.keys(cropColors).map((crop, i) => (
@@ -44,7 +44,7 @@ function Insights({ metaData }) {
                         <p><strong>Model:</strong> {model}</p>
                         <p><strong>Source:</strong> {source}</p>
                     </div>
-                    </>)}
+                    </>)} */}
             </div>
         </div>
     );
