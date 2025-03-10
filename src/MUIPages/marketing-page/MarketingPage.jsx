@@ -17,18 +17,19 @@ export default function MarketingPage(props) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <AppAppBar />
-      <Hero />
+      
+      <Hero/>
       <div>
         <LogoCollection />
         <Features />
         <Divider />
-        <Testimonials />
+        {/* <Testimonials /> */}
         <Divider />
         <Highlights />
         <Divider />
-        <Pricing />
+        {/* <Pricing /> */}
         <Divider />
-        <FAQ />
+        {/* <FAQ /> */}
         <Divider />
         <Footer />
       </div>
