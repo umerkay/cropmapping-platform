@@ -56,15 +56,15 @@ export default function AppAppBar() {
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
             <Sitemark />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button variant="text" color="info" sx={{color:'white',":hover":{backgroundColor:"transparent", color:"#ccc"} }} size="small">
+              {/* <Button variant="text" color="info" sx={{color:'white',":hover":{backgroundColor:"transparent", color:"#ccc"} }} size="small">
                 Features
-              </Button>
+              </Button> */}
               {/* <Button variant="text" color="info" size="small">
                 Testimonials
               </Button> */}
-              <Button variant="text" color="info" sx={{color:'white',":hover":{backgroundColor:"transparent", color:"#ccc"} }} size="small">
+              {/* <Button variant="text" color="info" sx={{color:'white',":hover":{backgroundColor:"transparent", color:"#ccc"} }} size="small">
                 Highlights
-              </Button>
+              </Button> */}
               {/* <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
                 FAQ
               </Button> */}

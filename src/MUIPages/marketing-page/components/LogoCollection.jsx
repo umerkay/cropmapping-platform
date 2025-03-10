@@ -4,18 +4,23 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { display, useTheme } from '@mui/system';
 
+import tumLogo from '../../../assets/tum-logo.png';
+import rptuLogo from '../../../assets/rptu logo.gif';
+import machVisLogo from '../../../assets/MachVis Logo.png';
+import nustLogo from '../../../assets/NUST.png';
+
 const whiteLogos = [
-  '../../../src/assets/tum-logo.png',
-  '../../../src/assets/rptu logo.gif',
-  '../../../src/assets/MachVis Logo.png',
-  '../../../src/assets/NUST.png',
+  tumLogo,
+  rptuLogo,
+  machVisLogo,
+  nustLogo,
 ];
 
 const darkLogos = [
-  '../../../src/assets/tum-logo.png',
-  '../../../src/assets/rptu logo.gif',
-  '../../../src/assets/MachVis Logo.png',
-  '../../../src/assets/NUST.png',
+  tumLogo,
+  rptuLogo,
+  machVisLogo,
+  nustLogo,
 ];
 
 const logoStyle = {
@@ -30,14 +35,14 @@ export default function LogoCollection() {
   const logos = theme.palette.mode === 'light' ? darkLogos : whiteLogos;
 
   return (
-    <Box id="logoCollection" sx={{ py: 4 }}>
+    <Box id="logoCollection" sx={{ py: 4, backgroundColor: "white", width: 800, margin: "auto", marginTop: "5rem", borderRadius: 1 }}>
       <Typography
         component="p"
-        variant="subtitle2"
+        variant="subtitle1"
         align="center"
-        sx={{ color: 'text.secondary' }}
+        sx={{ color: 'text.secondary', fontWeight: 600 }}
       >
-        Trusted by the best companies
+        In Collaboration With
       </Typography>
       <Grid container sx={{
         display: 'flex',

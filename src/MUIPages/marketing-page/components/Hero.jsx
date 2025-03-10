@@ -10,6 +10,8 @@ import Typography from '@mui/material/Typography';
 import visuallyHidden from '@mui/utils/visuallyHidden';
 import Sitemark from './SitemarkIcon';
 import { styled } from '@mui/material/styles';
+import Globe from 'react-globe.gl';
+import imggg from '../../../assets/pexels-pixabay-87651.jpg';
 
 const StyledBox = styled('div')(({ theme }) => ({
   alignSelf: 'center',
@@ -40,11 +42,9 @@ export default function Hero() {
   return (
     <Box
       id="hero"
-
       sx={{
-        overflowX:'hidden'
+        overflowX: 'hidden'
       }}
-      
     >
       <Container
         sx={{
@@ -54,40 +54,34 @@ export default function Hero() {
         }}
       >
         <Stack
-         spacing={2}
+          spacing={2}
           sx={{
-            alignItems: 'center',
+            alignItems: 'flex-start',
             display: 'flex',
-            alignContent: 'center',
+            paddingLeft: "15rem",
+            alignContent: 'flex-start',
             position: 'relative',
             justifyContent: 'center',
-            width: { xs: '100%', sm: '70%' },
-              width: '99.7vw',
-              minHeight: '101vh',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center', 
-              overflow:'hidden'
+            width: '99.7vw',
+            minHeight: '101vh',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            overflow: 'hidden'
           }}
         >
-
           <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundImage: `url('https://img.freepik.com/free-photo/glowing-liquid-waves-illuminate-dark-stratosphere-sphere-generated-by-ai_188544-37230.jpg?t=st=1741633674~exp=1741637274~hmac=79e2132f29700ae11a45cd664f7dbbe214cb3b350d168974b871a94880da30c3&w=2000')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                filter: 'blur(0px)', // Apply blur only to this Box
-                zIndex: -1, // Keeps background behind content
-              }}
-            />
-
-
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0)',
+              zIndex: -1,
+              textAlign: "left",
+            }}
+          />
           <Typography
             variant="h1"
             sx={{
@@ -102,7 +96,7 @@ export default function Hero() {
             </Typography>
           <Typography
             sx={{
-              textAlign: 'center',
+              textAlign: 'left',
               color: 'white',
               fontSize: '4rem',
               fontWeight: 'bold',
@@ -114,7 +108,7 @@ export default function Hero() {
           </Typography>  
           <Typography
             sx={{
-              textAlign: 'center',
+              textAlign: 'left',
               color: 'white',
               fontSize: 'clamp(1rem, 5vw, 1.5rem)',
               width: { sm: '100%', md: '80%' },
@@ -124,37 +118,24 @@ export default function Hero() {
           </Typography>
           <Typography
             sx={{
-              textAlign: 'center',
+              textAlign: 'left',
               color: 'white',
-              width: { sm: '100%', md: '80%' },
+              width: { sm: '100%', md: '40%' },
             }}
           >
-          Gain deep agricultural insights with AgroData—a powerful analytics platform for policymakers and stakeholders. Leverage AI-driven predictions with Kisan Rahnuma, your smart agriculture guide, to make informed decisions for a sustainable future. Explore production trends, district-level insights, and AI-powered analysis—all in one place.
+          Gain deep agricultural insights with AgroData—a powerful analytics platform for policymakers and stakeholders. Leverage AI-driven predictions with Zarai Rahnuma, your smart agriculture guide, to make informed decisions for a sustainable future. Explore production trends, district-level insights, and AI-powered analysis—all in one place.
           </Typography>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={1}
-            useFlexGap
-            display={{ xs: 'flex', sm: 'grid' }}
-            sx={{ pt: 2, width: { xs: '120px', sm: '120px' } }}
+          <Box
+            sx={{
+              position: 'absolute',
+              right: '11rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'white',
+            }}
           >
-            
-            <Button
-              width="100px"
-              size="small"
-
-              sx={{ minWidth: 'fit-content', 
-                backgroundColor: '#f2b558',
-                color: "black!important",
-                ":hover":{
-                  backgroundColor: 'rgb(218, 156, 63)',
-                  color: "black!important"
-                }
-              }}
-            >
-              Get Started
-            </Button>
-          </Stack>
+            <img src={imggg} alt="" width={700} />
+          </Box>
         </Stack>
         <StyledBox id="image" />
       </Container>

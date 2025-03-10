@@ -15,9 +15,9 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 const items = [
   {
     icon: <AutoAwesomeIcon />,
-    title: 'Kisaan Rehnuma',
+    title: 'Zarai Rehnuma',
     description:
-      'Leverage AI-driven predictions with Kisan Rahnuma, your smart agriculture guide, to make informed decisions for a sustainable future.',
+      'Leverage AI-driven predictions with Zarai Rahnuma, your smart agriculture guide, to make informed decisions for a sustainable future.',
     imageLight: `url("${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/dash-light.png")`,
     imageDark: `url("${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/dash-dark.png")`,
   },

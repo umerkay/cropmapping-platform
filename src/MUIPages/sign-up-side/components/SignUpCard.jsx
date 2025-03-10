@@ -2,17 +2,12 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MuiCard from "@mui/material/Card";
-import Checkbox from "@mui/material/Checkbox";
-import Divider from "@mui/material/Divider";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import ForgotPassword from "./ForgotPassword";
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 import { useNavigate } from "react-router-dom";
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -33,31 +28,25 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-export default function SignInCard() {
+export default function SignUpCard() {
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = React.useState(false);
+  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = React.useState("");
   const navigate = useNavigate();
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (emailError || passwordError) {
+    if (emailError || passwordError || confirmPasswordError) {
       return;
     }
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get("email"),
       password: data.get("password"),
+      confirmPassword: data.get("confirmPassword"),
     });
     navigate("/dashboard?view=Insights");
   };
@@ -65,6 +54,7 @@ export default function SignInCard() {
   const validateInputs = () => {
     const email = document.getElementById("email");
     const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
 
     let isValid = true;
 
@@ -86,6 +76,15 @@ export default function SignInCard() {
       setPasswordErrorMessage("");
     }
 
+    if (password.value !== confirmPassword.value) {
+      setConfirmPasswordError(true);
+      setConfirmPasswordErrorMessage("Passwords do not match.");
+      isValid = false;
+    } else {
+      setConfirmPasswordError(false);
+      setConfirmPasswordErrorMessage("");
+    }
+
     return isValid;
   };
 
@@ -101,7 +100,7 @@ export default function SignInCard() {
         variant="h4"
         sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
       >
-        Sign in
+        Sign up
       </Typography>
       <Box
         component="form"
@@ -127,18 +126,7 @@ export default function SignInCard() {
           />
         </FormControl>
         <FormControl>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <FormLabel htmlFor="password">Password</FormLabel>
-            <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: "baseline" }}
-            >
-              Forgot your password?
-            </Link>
-          </Box>
+          <FormLabel htmlFor="password">Password</FormLabel>
           <TextField
             error={passwordError}
             helperText={passwordErrorMessage}
@@ -146,7 +134,7 @@ export default function SignInCard() {
             placeholder="••••••"
             type="password"
             id="password"
-            autoComplete="current-password"
+            autoComplete="new-password"
             autoFocus
             required
             fullWidth
@@ -154,51 +142,44 @@ export default function SignInCard() {
             color={passwordError ? "error" : "primary"}
           />
         </FormControl>
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        />
-        <ForgotPassword open={open} handleClose={handleClose} />
+        <FormControl>
+          <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+          <TextField
+            error={confirmPasswordError}
+            helperText={confirmPasswordErrorMessage}
+            name="confirmPassword"
+            placeholder="••••••"
+            type="password"
+            id="confirmPassword"
+            autoComplete="new-password"
+            autoFocus
+            required
+            fullWidth
+            variant="outlined"
+            color={confirmPasswordError ? "error" : "primary"}
+          />
+        </FormControl>
         <Button
           type="submit"
           fullWidth
           variant="contained"
           onClick={validateInputs}
         >
-          Sign in
+          Sign up
         </Button>
         <Typography sx={{ textAlign: "center" }}>
-          Don&apos;t have an account?{" "}
+          Already have an account?{" "}
           <span>
             <Link
-              href="/signup"
+              href="/signin"
               variant="body2"
               sx={{ alignSelf: "center" }}
             >
-              Sign up
+              Sign in
             </Link>
           </span>
         </Typography>
       </Box>
-      {/* <Divider>or</Divider>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => alert('Sign in with Google')}
-          startIcon={<GoogleIcon />}
-        >
-          Sign in with Google
-        </Button>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => alert('Sign in with Facebook')}
-          startIcon={<FacebookIcon />}
-        >
-          Sign in with Facebook
-        </Button>
-      </Box> */}
     </Card>
   );
 }
