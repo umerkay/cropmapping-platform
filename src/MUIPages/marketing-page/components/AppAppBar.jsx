@@ -23,9 +23,11 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   backdropFilter: 'blur(24px)',
   border: '1px solid',
   borderColor: (theme.vars || theme).palette.divider,
-  backgroundColor: theme.vars
-    ? `rgba(${theme.vars.palette.background.defaultChannel} / 0.4)`
-    : alpha(theme.palette.background.default, 0.4),
+  backgroundColor:'#001',
+  // backgroundColor: theme.vars
+  //   ? `rgba(${theme.vars.palette.background.defaultChannel} / 0.4)`
+  //   : `rgba(${theme.vars.palette.background.defaultChannel} / 0.4)`,
+  //   // : alpha(theme.palette.background.default, 0.4),
   boxShadow: (theme.vars || theme).shadows[1],
   padding: '8px 12px',
 }));
@@ -53,24 +55,21 @@ export default function AppAppBar() {
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
             <Sitemark />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button variant="text" color="info" size="small">
+              <Button variant="text" color="info" sx={{color:'white',":hover":{backgroundColor:"transparent", color:"#ccc"} }} size="small">
                 Features
               </Button>
-              <Button variant="text" color="info" size="small">
+              {/* <Button variant="text" color="info" size="small">
                 Testimonials
-              </Button>
-              <Button variant="text" color="info" size="small">
+              </Button> */}
+              <Button variant="text" color="info" sx={{color:'white',":hover":{backgroundColor:"transparent", color:"#ccc"} }} size="small">
                 Highlights
               </Button>
-              <Button variant="text" color="info" size="small">
-                Pricing
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
+              {/* <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
                 FAQ
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
+              </Button> */}
+              {/* <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
                 Blog
-              </Button>
+              </Button> */}
             </Box>
           </Box>
           <Box
@@ -80,10 +79,26 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button color="primary" variant="text" size="small">
+            <Button size="small"  
+              sx={{ minWidth: 'fit-content', 
+                border: '1px solid #f2b558',
+                color: "#f2b558!important",
+                ":hover":{
+                  backgroundColor: '#f2b558',
+                  color: "black!important"
+                }
+              }}
+              >
               Sign in
             </Button>
-            <Button color="primary" variant="contained" size="small">
+            <Button  size="small" sx={{ minWidth: 'fit-content', 
+                backgroundColor: '#f2b558',
+                color: "black!important",
+                ":hover":{
+                  backgroundColor: 'rgb(218, 156, 63)',
+                  color: "black!important"
+                }
+              }}>
               Sign up
             </Button>
             <ColorModeIconDropdown />

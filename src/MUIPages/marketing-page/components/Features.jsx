@@ -8,32 +8,32 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 
-import DevicesRoundedIcon from '@mui/icons-material/DevicesRounded';
-import EdgesensorHighRoundedIcon from '@mui/icons-material/EdgesensorHighRounded';
-import ViewQuiltRoundedIcon from '@mui/icons-material/ViewQuiltRounded';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import DownloadingIcon from '@mui/icons-material/Downloading';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 const items = [
   {
-    icon: <ViewQuiltRoundedIcon />,
-    title: 'Dashboard',
+    icon: <AutoAwesomeIcon />,
+    title: 'Kisaan Rehnuma',
     description:
-      'This item could provide a snapshot of the most important metrics or data points related to the product.',
+      'Leverage AI-driven predictions with Kisan Rahnuma, your smart agriculture guide, to make informed decisions for a sustainable future.',
     imageLight: `url("${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/dash-light.png")`,
     imageDark: `url("${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/dash-dark.png")`,
   },
   {
-    icon: <EdgesensorHighRoundedIcon />,
-    title: 'Mobile integration',
+    icon: <DashboardIcon />,
+    title: 'Analytics Dashboard',
     description:
-      'This item could provide information about the mobile app version of the product.',
+      'Explore production trends, district-level insights, and AI-powered analysis—all in one place.',
     imageLight: `url("${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/mobile-light.png")`,
     imageDark: `url("${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/mobile-dark.png")`,
   },
   {
-    icon: <DevicesRoundedIcon />,
-    title: 'Available on all platforms',
+    icon: <DownloadingIcon />,
+    title: 'Download Data',
     description:
-      'This item could let users know the product is available on all platforms, such as web, mobile, and desktop.',
+      'Access high-resolution agricultural datasets for academic and research purposes. Download TIFF images, analytical reports, and AI-driven insights to support data-driven studies and policy development.',
     imageLight: `url("${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/devices-light.png")`,
     imageDark: `url("${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/images/templates/templates-images/devices-dark.png")`,
   },

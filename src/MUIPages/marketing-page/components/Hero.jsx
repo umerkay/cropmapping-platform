@@ -8,12 +8,12 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import visuallyHidden from '@mui/utils/visuallyHidden';
+import Sitemark from './SitemarkIcon';
 import { styled } from '@mui/material/styles';
 
 const StyledBox = styled('div')(({ theme }) => ({
   alignSelf: 'center',
-  width: '100%',
-  height: 400,
+  height: 'auto',
   marginTop: theme.spacing(8),
   borderRadius: (theme.vars || theme).shape.borderRadius,
   outline: '6px solid',
@@ -21,15 +21,16 @@ const StyledBox = styled('div')(({ theme }) => ({
   border: '1px solid',
   borderColor: (theme.vars || theme).palette.grey[200],
   boxShadow: '0 0 12px 8px hsla(220, 25%, 80%, 0.2)',
-  backgroundImage: `url(${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/screenshots/material-ui/getting-started/templates/dashboard.jpg)`,
+  backgroundImage: `url(../../../src/assets/dashboard_light.jpg)`,
   backgroundSize: 'cover',
   [theme.breakpoints.up('sm')]: {
     marginTop: theme.spacing(10),
-    height: 700,
+    height: 600,
+    width: '100%',
   },
   ...theme.applyStyles('dark', {
     boxShadow: '0 0 24px 12px hsla(210, 100%, 25%, 0.2)',
-    backgroundImage: `url(${import.meta.env.VITE_TEMPLATE_IMAGE_URL || 'https://mui.com'}/static/screenshots/material-ui/getting-started/templates/dashboard-dark.jpg)`,
+    backgroundImage: `url(../../../src/assets/dashboard_dark.jpg)`,
     outlineColor: 'hsla(220, 20%, 42%, 0.1)',
     borderColor: (theme.vars || theme).palette.grey[700],
   }),
@@ -39,31 +40,54 @@ export default function Hero() {
   return (
     <Box
       id="hero"
-      sx={(theme) => ({
-        width: '100%',
-        backgroundRepeat: 'no-repeat',
-        backgroundImage:
-          'radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 90%), transparent)',
-        ...theme.applyStyles('dark', {
-          backgroundImage:
-            'radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 16%), transparent)',
-        }),
-      })}
+
+      sx={{
+        overflowX:'hidden'
+      }}
+      
     >
       <Container
         sx={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          pt: { xs: 14, sm: 20 },
-          pb: { xs: 8, sm: 12 },
         }}
       >
         <Stack
-          spacing={2}
-          useFlexGap
-          sx={{ alignItems: 'center', width: { xs: '100%', sm: '70%' } }}
+         spacing={2}
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            alignContent: 'center',
+            position: 'relative',
+            justifyContent: 'center',
+            width: { xs: '100%', sm: '70%' },
+              width: '99.7vw',
+              minHeight: '101vh',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center', 
+              overflow:'hidden'
+          }}
         >
+
+          <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundImage: `url('https://img.freepik.com/free-photo/glowing-liquid-waves-illuminate-dark-stratosphere-sphere-generated-by-ai_188544-37230.jpg?t=st=1741633674~exp=1741637274~hmac=79e2132f29700ae11a45cd664f7dbbe214cb3b350d168974b871a94880da30c3&w=2000')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                filter: 'blur(0px)', // Apply blur only to this Box
+                zIndex: -1, // Keeps background behind content
+              }}
+            />
+
+
           <Typography
             variant="h1"
             sx={{
@@ -71,78 +95,66 @@ export default function Hero() {
               flexDirection: { xs: 'column', sm: 'row' },
               alignItems: 'center',
               fontSize: 'clamp(3rem, 10vw, 3.5rem)',
+              color: 'white',
+              textShadow: '0 0 12px rgba(0, 0, 0, 0.64)',
             }}
           >
-            Our&nbsp;latest&nbsp;
-            <Typography
-              component="span"
-              variant="h1"
-              sx={(theme) => ({
-                fontSize: 'inherit',
-                color: 'primary.main',
-                ...theme.applyStyles('dark', {
-                  color: 'primary.light',
-                }),
-              })}
-            >
-              products
             </Typography>
+          <Typography
+            sx={{
+              textAlign: 'center',
+              color: 'white',
+              fontSize: '4rem',
+              fontWeight: 'bold',
+              width: { sm: '100%', md: '80%' },
+              textShadow: '0 0 12px rgba(0, 0, 0, 0.64)',
+            }}
+          >
+            AgroData
+          </Typography>  
+          <Typography
+            sx={{
+              textAlign: 'center',
+              color: 'white',
+              fontSize: 'clamp(1rem, 5vw, 1.5rem)',
+              width: { sm: '100%', md: '80%' },
+            }}
+          >
+            Precise Data. Smarter Policies. Better Agriculture
           </Typography>
           <Typography
             sx={{
               textAlign: 'center',
-              color: 'text.secondary',
+              color: 'white',
               width: { sm: '100%', md: '80%' },
             }}
           >
-            Explore our cutting-edge dashboard, delivering high-quality solutions
-            tailored to your needs. Elevate your experience with top-tier features
-            and services.
+          Gain deep agricultural insights with AgroData—a powerful analytics platform for policymakers and stakeholders. Leverage AI-driven predictions with Kisan Rahnuma, your smart agriculture guide, to make informed decisions for a sustainable future. Explore production trends, district-level insights, and AI-powered analysis—all in one place.
           </Typography>
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={1}
             useFlexGap
-            sx={{ pt: 2, width: { xs: '100%', sm: '350px' } }}
+            display={{ xs: 'flex', sm: 'grid' }}
+            sx={{ pt: 2, width: { xs: '120px', sm: '120px' } }}
           >
-            <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
-              Email
-            </InputLabel>
-            <TextField
-              id="email-hero"
-              hiddenLabel
-              size="small"
-              variant="outlined"
-              aria-label="Enter your email address"
-              placeholder="Your email address"
-              fullWidth
-              slotProps={{
-                htmlInput: {
-                  autoComplete: 'off',
-                  'aria-label': 'Enter your email address',
-                },
-              }}
-            />
+            
             <Button
-              variant="contained"
-              color="primary"
+              width="100px"
               size="small"
-              sx={{ minWidth: 'fit-content' }}
+
+              sx={{ minWidth: 'fit-content', 
+                backgroundColor: '#f2b558',
+                color: "black!important",
+                ":hover":{
+                  backgroundColor: 'rgb(218, 156, 63)',
+                  color: "black!important"
+                }
+              }}
             >
-              Start now
+              Get Started
             </Button>
           </Stack>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ textAlign: 'center' }}
-          >
-            By clicking &quot;Start now&quot; you agree to our&nbsp;
-            <Link href="#" color="primary">
-              Terms & Conditions
-            </Link>
-            .
-          </Typography>
         </Stack>
         <StyledBox id="image" />
       </Container>
