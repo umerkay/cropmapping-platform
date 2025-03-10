@@ -18,7 +18,6 @@ Make sure you have the following installed:
     git clone https://github.com/yourusername/cropplatform.git
     cd cropplatform
     ```
-    
 
 2. Install dependencies:
     ```bash
