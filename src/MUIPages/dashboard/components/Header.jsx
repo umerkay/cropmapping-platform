@@ -5,10 +5,9 @@ import CustomDatePicker from './CustomDatePicker';
 import NavbarBreadcrumbs from './NavbarBreadcrumbs';
 import MenuButton from './MenuButton';
 import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
-
 import Search from './Search';
 
-export default function Header() {
+export default function Header({ view, appendMessage }) {
   return (
     <Stack
       direction="row"
@@ -22,13 +21,13 @@ export default function Header() {
       }}
       spacing={2}
     >
-      <NavbarBreadcrumbs />
-      <Stack direction="row" sx={{ gap: 1 }}>
-        <Search />
+      <NavbarBreadcrumbs view={view} />
+      <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
+        {(view !== 'AgroAI' && view !== 'Insights' && view !== 'Download') && <Search view={appendMessage} />}
         <CustomDatePicker />
-        <MenuButton showBadge aria-label="Open notifications">
+        {/* <MenuButton showBadge aria-label="Open notifications">
           <NotificationsRoundedIcon />
-        </MenuButton>
+        </MenuButton> */}
         <ColorModeIconDropdown />
       </Stack>
     </Stack>

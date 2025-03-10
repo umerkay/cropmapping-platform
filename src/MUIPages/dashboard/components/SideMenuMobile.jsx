@@ -11,59 +11,102 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import MenuButton from './MenuButton';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import { Link } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
+import MapIcon from '@mui/icons-material/Map';
+import InsightsIcon from '@mui/icons-material/Insights';
+import DownloadIcon from '@mui/icons-material/Download';
+import AiIcon from '@mui/icons-material/Assistant';
+import Logo from './Logo'; // Assuming you have a Logo component
+
+const menuItems = [
+  { text: 'Overview', icon: <HomeIcon />, path: 'Overview' },
+  { text: 'District View', icon: <MapIcon />, path: 'District' },
+  { text: 'Province View', icon: <MapIcon />, path: 'Province' },
+  { text: 'Insights', icon: <InsightsIcon />, path: 'Insights' },
+  { text: 'Download', icon: <DownloadIcon />, path: 'Download' },
+  { text: 'Zarai Rehnuma (AI)', icon: <AiIcon />, path: 'AgroAI' },
+];
 
 function SideMenuMobile({ open, toggleDrawer }) {
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
+
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={toggleDrawer(false)}
-      sx={{
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-        [`& .${drawerClasses.paper}`]: {
-          backgroundImage: 'none',
-          backgroundColor: 'background.paper',
-        },
-      }}
-    >
-      <Stack
-        sx={{
-          maxWidth: '70dvw',
-          height: '100%',
-        }}
-      >
-        <Stack direction="row" sx={{ p: 2, pb: 0, gap: 1 }}>
+    <>
+      {isMobile && (
+        <Drawer
+          anchor="right"
+          open={open}
+          onClose={toggleDrawer(false)}
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            [`& .${drawerClasses.paper}`]: {
+              backgroundImage: 'none',
+              backgroundColor: 'background.paper',
+            },
+          }}
+        >
           <Stack
-            direction="row"
-            sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 }}
+            sx={{
+              maxWidth: '70dvw',
+              height: '100%',
+            }}
           >
-            <Avatar
-              sizes="small"
-              alt="Riley Carter"
-              src="/static/images/avatar/7.jpg"
-              sx={{ width: 24, height: 24 }}
-            />
-            <Typography component="p" variant="h6">
-              Riley Carter
-            </Typography>
+            <Stack direction="row" sx={{ p: 2, pb: 0, gap: 1 }}>
+              {/* <Stack
+                direction="row"
+                sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 }}
+              >
+                <Avatar
+                  sizes="small"
+                  alt="Riley Carter"
+                  src="/static/images/avatar/7.jpg"
+                  sx={{ width: 24, height: 24 }}
+                />
+                <Typography component="p" variant="h6">
+                  Riley Carter
+                </Typography>
+              </Stack> */}
+              {/* <MenuButton showBadge>
+                <NotificationsRoundedIcon />
+              </MenuButton> */}
+            </Stack>
+            {/* <Divider /> */}
+            <Stack sx={{ flexGrow: 1 }}>
+              <Logo />
+              <Typography variant="h6" sx={{ p: 2 }}>
+                AgroData PK
+              </Typography>
+              <Divider />
+              <List>
+                {menuItems.map((item) => (
+                  <ListItemButton
+                    key={item.text}
+                    component={Link}
+                    to={`/dashboard?view=${item.path}`}
+                  >
+                    <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItemButton>
+                ))}
+              </List>
+              <Divider />
+            </Stack>
+            {/* <CardAlert /> */}
+            {/* <Stack sx={{ p: 2 }}>
+              <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
+                Logout
+              </Button>
+            </Stack> */}
           </Stack>
-          <MenuButton showBadge>
-            <NotificationsRoundedIcon />
-          </MenuButton>
-        </Stack>
-        <Divider />
-        <Stack sx={{ flexGrow: 1 }}>
-          <MenuContent />
-          <Divider />
-        </Stack>
-        <CardAlert />
-        <Stack sx={{ p: 2 }}>
-          <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
-            Logout
-          </Button>
-        </Stack>
-      </Stack>
-    </Drawer>
+        </Drawer>
+      )}
+    </>
   );
 }
 
