@@ -1,7 +1,7 @@
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import React, { useState } from "react";
 
-function Controls({ polygons, onPolygonSelect }) {
+function Controls({ polygons, onPolygonSelect, setMode }) {
     const [selected, setSelected] = useState({
         timestamp: "",
         showMap: true

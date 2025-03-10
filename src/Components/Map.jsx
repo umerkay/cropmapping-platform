@@ -77,7 +77,7 @@ function App({ mode, setMode }) {
   return (
     <div className="custom-css">
       <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS}>
-        <Controls polygons={polygons} onPolygonSelect={handlePolygonSelect} />
+        <Controls setMode={setMode} polygons={polygons} onPolygonSelect={handlePolygonSelect} />
         <div id="map">
           <GoogleMap
             mapContainerStyle={containerStyle}

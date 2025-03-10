@@ -6,32 +6,33 @@ import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
 import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
 import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
 import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
-import { SitemarkIcon } from './CustomIcons';
+import { MapIcon } from 'lucide-react';
+import { Assistant, Insights } from '@mui/icons-material';
 
 const items = [
   {
-    icon: <SettingsSuggestRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Adaptable performance',
+    icon: <MapIcon sx={{ color: 'text.secondary' }} />,
+    title: 'Regularly updated crop maps',
     description:
-      'Our product effortlessly adjusts to your needs, boosting efficiency and simplifying your tasks.',
+      'Regularly updated crop maps of Pakistan major areas.',
   },
   {
-    icon: <ConstructionRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Built to last',
+    icon: <Insights sx={{ color: 'text.secondary' }} />,
+    title: 'Insights and predictions',
     description:
-      'Experience unmatched durability that goes above and beyond with lasting investment.',
-  },
-  {
-    icon: <ThumbUpAltRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Great user experience',
-    description:
-      'Integrate our product into your routine with an intuitive and easy-to-use interface.',
+      'Insights and predictions for yield and agricultural patterns.',
   },
   {
     icon: <AutoFixHighRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Innovative functionality',
+    title: 'Ongoing research project',
     description:
-      'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
+      'Part of an ongoing research project at MachVis Lab SEECS NUST.',
+  },
+  {
+    icon: <Assistant sx={{ color: 'text.secondary' }} />,
+    title: 'Zarai Rehnuma (AI)',
+    description:
+      'AI expert in agricultural data with tools to access data and generate insights.',
   },
 ];
 
@@ -41,7 +42,9 @@ export default function Content() {
       sx={{ flexDirection: 'column', alignSelf: 'center', gap: 4, maxWidth: 450 }}
     >
       <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-        <SitemarkIcon />
+        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+          Agro AI
+        </Typography>
       </Box>
       {items.map((item, index) => (
         <Stack key={index} direction="row" sx={{ gap: 2 }}>

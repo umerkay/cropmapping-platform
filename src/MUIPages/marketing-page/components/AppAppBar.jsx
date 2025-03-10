@@ -13,6 +13,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
 import Sitemark from './SitemarkIcon';
+import { Link } from 'react-router-dom';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -79,28 +80,11 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button size="small"  
-              sx={{ minWidth: 'fit-content', 
-                border: '1px solid #f2b558',
-                color: "#f2b558!important",
-                ":hover":{
-                  backgroundColor: '#f2b558',
-                  color: "black!important"
-                }
-              }}
-              >
+            <Link to={'/signin'}>
+            <Button color="primary" variant="text" size="small">
               Sign in
             </Button>
-            <Button  size="small" sx={{ minWidth: 'fit-content', 
-                backgroundColor: '#f2b558',
-                color: "black!important",
-                ":hover":{
-                  backgroundColor: 'rgb(218, 156, 63)',
-                  color: "black!important"
-                }
-              }}>
-              Sign up
-            </Button>
+            </Link>
             <ColorModeIconDropdown />
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
@@ -138,14 +122,11 @@ export default function AppAppBar() {
                 <MenuItem>Blog</MenuItem>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
-                  <Button color="primary" variant="contained" fullWidth>
-                    Sign up
-                  </Button>
-                </MenuItem>
-                <MenuItem>
+                <Link to={'/signin'}>
                   <Button color="primary" variant="outlined" fullWidth>
                     Sign in
                   </Button>
+                </Link>
                 </MenuItem>
               </Box>
             </Drawer>
