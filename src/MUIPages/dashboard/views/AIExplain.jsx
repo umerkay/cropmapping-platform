@@ -277,9 +277,7 @@ export default function AIExplain() {
                         ]}
                         series={[
                           {
-                            data: Object.values(graphData.landUseData).map(
-                              (item) => item.acres
-                            ),
+                            data: Object.values(graphData.landUseData),
                             label: "Acres",
                           },
                         ]}
@@ -300,9 +298,7 @@ export default function AIExplain() {
                         ]}
                         series={[
                           {
-                            data: Object.values(graphData.cropTypeData).map(
-                              (item) => item.acres
-                            ),
+                            data: Object.values(graphData.cropTypeData),
                             label: "Acres",
                           },
                         ]}
@@ -310,29 +306,31 @@ export default function AIExplain() {
                         height={300}
                       />
                     </Box>
-                    <Box sx={{ height: "fit-content", display: "flex", flexDirection: "column",justifyContent: "center" }}>
-                      <Typography variant="h6" gutterBottom>
-                        Expected Yield Data
-                      </Typography>
-                      <BarChart
-                        xAxis={[
-                          {
-                            scaleType: "band",
-                            data: Object.keys(graphData.expectedYieldData),
-                          },
-                        ]}
-                        series={[
-                          {
-                            data: Object.values(graphData.expectedYieldData).map(
-                              (item) => item.expectedYield
-                            ),
-                            label: "Expected Yield",
-                          },
-                        ]}
-                        width={400}
-                        height={300}
-                      />
-                    </Box>
+                    {graphData.expectedYieldData && (
+                      <Box sx={{ height: "fit-content", display: "flex", flexDirection: "column",justifyContent: "center" }}>
+                        <Typography variant="h6" gutterBottom>
+                          Expected Yield Data
+                        </Typography>
+                        <BarChart
+                          xAxis={[
+                            {
+                              scaleType: "band",
+                              data: Object.keys(graphData.expectedYieldData),
+                            },
+                          ]}
+                          series={[
+                            {
+                              data: Object.values(graphData.expectedYieldData).map(
+                                (item) => typeof item === 'object' ? item.expectedYield : item
+                              ),
+                              label: "Expected Yield",
+                            },
+                          ]}
+                          width={400}
+                          height={300}
+                        />
+                      </Box>
+                    )}
                   </>
                 )}
               </Paper>

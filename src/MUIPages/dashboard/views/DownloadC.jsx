@@ -8,45 +8,438 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import { usePolygons } from '../../../Context/PolygonsContext';
+import { toast } from 'react-toastify';
 
+// Constants
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const years = [2022, 2023, 2024, 2025];
-const fileFormats = ['GeoTIFF', 'PNG'];
 const dataTypes = ['Land Use Data', 'Crop Type Data'];
-const dataFormats = ['JSON', 'CSV'];
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/map`;
 
 export default function Download() {
   const { districtGeojsonData, provinceGeojsonData } = usePolygons();
   const [districts, setDistricts] = useState([]);
   const [provinces, setProvinces] = useState([]);
-  const [selectedRegion, setSelectedRegion] = useState('');
-  const [selectedDistrictOrProvince, setSelectedDistrictOrProvince] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState('');
+  
+  // Image data form states
+  const [selectedRegionImg, setSelectedRegionImg] = useState('');
+  const [selectedDistrictOrProvinceImg, setSelectedDistrictOrProvinceImg] = useState('');
+  const [selectedSeason, setSelectedSeason] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
-  const [selectedFileFormat, setSelectedFileFormat] = useState('');
+  const [loadingImg, setLoadingImg] = useState(false);
+  
+  // Trends data form states
+  const [selectedRegionTrend, setSelectedRegionTrend] = useState('');
+  const [selectedDistrictOrProvinceTrend, setSelectedDistrictOrProvinceTrend] = useState('');
   const [selectedDataTypes, setSelectedDataTypes] = useState([]);
-  const [selectedDataFormat, setSelectedDataFormat] = useState('');
   const [selectedStartMonth, setSelectedStartMonth] = useState('');
   const [selectedEndMonth, setSelectedEndMonth] = useState('');
   const [selectedStartYear, setSelectedStartYear] = useState('');
   const [selectedEndYear, setSelectedEndYear] = useState('');
+  const [loadingTrend, setLoadingTrend] = useState(false);
 
+  // When data is loaded, populate districts and provinces
   useEffect(() => {
     if (districtGeojsonData) {
-      setDistricts(districtGeojsonData.features.map(feature => feature.properties.NAME_3));
+      // Filter districts to only include Punjab and Sindh
+      const filteredDistricts = districtGeojsonData.features
+        .filter(feature => feature.properties.NAME_1 === "Punjab" || feature.properties.NAME_1 === "Sindh")
+        .map(feature => ({
+          name: feature.properties.NAME_3,
+          province: feature.properties.NAME_1
+        }));
+      setDistricts(filteredDistricts);
     }
+    
     if (provinceGeojsonData) {
-      setProvinces(provinceGeojsonData.features.map(feature => feature.properties.NAME_1));
+      // Filter provinces to only include Punjab and Sindh
+      const filteredProvinces = provinceGeojsonData.features
+        .filter(feature => feature.properties.NAME_1 === "Punjab" || feature.properties.NAME_1 === "Sindh")
+        .map(feature => feature.properties.NAME_1);
+      setProvinces(filteredProvinces);
     }
   }, [districtGeojsonData, provinceGeojsonData]);
 
-  const handleDownloadImageData = () => {
-    // Implement download logic for image data
+  // Handle season change based on selected region for image data
+  const handleSeasonChangeImg = (e) => {
+    const season = e.target.value;
+    setSelectedSeason(season);
+    
+    // Reset year if needed based on season
+    if (season === 'Winter Season (January to May)') {
+      setSelectedYear('2025');
+    } else if (season === 'Summer Season (June to December)') {
+      setSelectedYear('2024');
+    } else {
+      setSelectedYear('');
+    }
   };
 
-  const handleDownloadTrendsData = () => {
-    // Implement download logic for trends data
+  // Handle district/province selection for image data
+  const handleRegionChangeImg = (e) => {
+    const region = e.target.value;
+    setSelectedRegionImg(region);
+    setSelectedDistrictOrProvinceImg('');
+    
+    // Reset season and year if Sindh is selected (only winter season is available for Sindh)
+    if (region === 'province' && provinces.includes('Sindh')) {
+      setSelectedSeason('Winter Season (January to May)');
+      setSelectedYear('2025');
+    }
+  };
+
+  // Handle district/province selection change for image data
+  const handleDistrictOrProvinceChangeImg = (e) => {
+    const selection = e.target.value;
+    setSelectedDistrictOrProvinceImg(selection);
+    
+    // Check if Sindh district/province is selected
+    const isSindh = selectedRegionImg === 'province' 
+      ? selection === 'Sindh'
+      : districts.find(d => d.name === selection)?.province === 'Sindh';
+    
+    // Reset season and year for Sindh
+    if (isSindh) {
+      setSelectedSeason('Winter Season (January to May)');
+      setSelectedYear('2025');
+    }
+  };
+
+  // Handle region change for trends data
+  const handleRegionChangeTrend = (e) => {
+    const region = e.target.value;
+    setSelectedRegionTrend(region);
+    setSelectedDistrictOrProvinceTrend('');
+    
+    // Reset date range if Sindh is selected
+    if (region === 'province' && provinces.includes('Sindh')) {
+      setSelectedStartMonth('January');
+      setSelectedEndMonth('April');
+      setSelectedStartYear('2025');
+      setSelectedEndYear('2025');
+    }
+  };
+
+  // Handle district/province selection change for trends data
+  const handleDistrictOrProvinceChangeTrend = (e) => {
+    const selection = e.target.value;
+    setSelectedDistrictOrProvinceTrend(selection);
+    
+    // Check if Sindh district/province is selected
+    const isSindh = selectedRegionTrend === 'province' 
+      ? selection === 'Sindh'
+      : districts.find(d => d.name === selection)?.province === 'Sindh';
+    
+    // Reset date range for Sindh
+    if (isSindh) {
+      setSelectedStartMonth('January');
+      setSelectedEndMonth('April');
+      setSelectedStartYear('2025');
+      setSelectedEndYear('2025');
+    }
+  };
+
+  const handleDownloadImageData = async () => {
+    if (!validateImageForm()) return;
+    
+    setLoadingImg(true);
+    
+    try {
+      let regionName = selectedDistrictOrProvinceImg;
+      let province;
+      
+      // Format the region name and get province
+      if (selectedRegionImg === 'district') {
+        const district = districts.find(d => d.name === regionName);
+        province = district.province;
+        regionName = regionName.replace(/ /g, "_").replace(/,/g, "_").replace(/\./g, "_");
+      } else {
+        province = regionName;
+        if (province === 'Sindh') province = 'Sind'; // Match the naming convention in the API
+      }
+      
+      // Map season to file format
+      const seasonFormat = selectedSeason === 'Winter Season (January to May)' ? 'Jan-Apr' : 'Jun-Dec';
+      const year = selectedYear;
+      
+      // Construct the file URL for PNG
+      let fileUrl;
+      if (province === "Sindh" || province === "Sind" || province === "Punjab") {
+        fileUrl = `${API_BASE_URL}/data/${seasonFormat}_${year}_${province}/croppedPngs/${seasonFormat}_${year}_${regionName}.png`;
+      }
+      
+      if (!fileUrl) {
+        toast.error('Unable to construct download URL');
+        setLoadingImg(false);
+        return;
+      }
+      
+      // Attempt to download the file
+      const response = await fetch(fileUrl);
+      
+      if (!response.ok) {
+        toast.error(`File not available: ${response.statusText}`);
+        setLoadingImg(false);
+        return;
+      }
+      
+      // Create a blob from the response
+      const blob = await response.blob();
+      
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `${seasonFormat}_${year}_${regionName}.png`;
+      
+      // Trigger the download
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast.success('Download started successfully');
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Error during download: ' + (error.message || 'Unknown error'));
+    } finally {
+      setLoadingImg(false);
+    }
+  };
+
+  const handleDownloadTrendsData = async () => {
+    if (!validateTrendsForm()) return;
+    
+    setLoadingTrend(true);
+    
+    try {
+      let regionName = selectedDistrictOrProvinceTrend;
+      let province;
+      
+      // Format the region name and get province
+      if (selectedRegionTrend === 'district') {
+        const district = districts.find(d => d.name === regionName);
+        province = district.province;
+        regionName = regionName.replace(/ /g, "_")
+      } else {
+        province = regionName;
+      }
+      
+      // Map month ranges to seasons for file naming
+      const isWinterSeason = selectedStartMonth === 'January' && selectedEndMonth === 'April';
+      const isSummerSeason = selectedStartMonth === 'June' && selectedEndMonth === 'December';
+      
+      if (!isWinterSeason && !isSummerSeason) {
+        toast.error('Only January-April and June-December date ranges are supported');
+        setLoadingTrend(false);
+        return;
+      }
+      
+      const seasonFormat = isWinterSeason ? 'Jan-Apr' : 'Jun-Dec';
+      const year = selectedStartYear;
+      
+      // Check if selected date range is available
+      if (province === 'Sindh' && !isWinterSeason) {
+        toast.error('Only Winter Season (January to April) data is available for Sindh');
+        setLoadingTrend(false);
+        return;
+      }
+      
+      if (isWinterSeason && year !== '2025') {
+        toast.error('Only 2025 data is available for Winter Season');
+        setLoadingTrend(false);
+        return;
+      }
+      
+      if (isSummerSeason && year !== '2024') {
+        toast.error('Only 2024 data is available for Summer Season');
+        setLoadingTrend(false);
+        return;
+      }
+      
+      // Construct the file URL for JSON
+      // const fileUrl = `${API_BASE_URL}/data/${seasonFormat}_${year}_${regionName}.json`;
+      const fileUrl = `http://localhost:8000/files/json/${seasonFormat}_${year}_${regionName}.json`;
+      
+      // Attempt to download the file
+      const response = await fetch(fileUrl);
+      
+      if (!response.ok) {
+        toast.error(`File not available: ${response.statusText}`);
+        setLoadingTrend(false);
+        return;
+      }
+      
+      let data = await response.json();
+      
+      // Filter data based on selected data types
+      if (selectedDataTypes.length > 0) {
+        const filteredData = {};
+        
+        if (selectedDataTypes.includes('Land Use Data') && data.landUseData) {
+          filteredData.landUseData = data.landUseData;
+        }
+        
+        if (selectedDataTypes.includes('Crop Type Data') && data.cropTypeData) {
+          filteredData.cropTypeData = data.cropTypeData;
+          filteredData.expectedYieldData = data.expectedYieldData;
+        }
+        
+        data = filteredData;
+      }
+      
+      // Create JSON file for download
+      const fileContent = JSON.stringify(data, null, 2);
+      const fileName = `${seasonFormat}_${year}_${regionName}.json`;
+      
+      // Create a blob from the content
+      const blob = new Blob([fileContent], { type: 'application/json' });
+      
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = fileName;
+      
+      // Trigger the download
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast.success('Download started successfully');
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Error during download: ' + (error.message || 'Unknown error'));
+    } finally {
+      setLoadingTrend(false);
+    }
+  };
+
+  // Form validation functions
+  const validateImageForm = () => {
+    if (!selectedRegionImg) {
+      toast.error('Please select a region type (District or Province)');
+      return false;
+    }
+    
+    if (!selectedDistrictOrProvinceImg) {
+      toast.error('Please select a district or province');
+      return false;
+    }
+    
+    if (!selectedSeason) {
+      toast.error('Please select a season');
+      return false;
+    }
+    
+    if (!selectedYear) {
+      toast.error('Please select a year');
+      return false;
+    }
+    
+    // Check if valid combination
+    const selectedProvince = selectedRegionImg === 'province' 
+      ? selectedDistrictOrProvinceImg 
+      : districts.find(d => d.name === selectedDistrictOrProvinceImg)?.province;
+    
+    if (selectedProvince === 'Sindh' && selectedSeason === 'Summer Season (June to December)') {
+      toast.error('Summer Season data is not available for Sindh');
+      return false;
+    }
+    
+    if (selectedSeason === 'Winter Season (January to May)' && selectedYear !== '2025') {
+      toast.error('Only 2025 data is available for Winter Season');
+      return false;
+    }
+    
+    if (selectedSeason === 'Summer Season (June to December)' && selectedYear !== '2024') {
+      toast.error('Only 2024 data is available for Summer Season');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const validateTrendsForm = () => {
+    if (!selectedRegionTrend) {
+      toast.error('Please select a region type (District or Province)');
+      return false;
+    }
+    
+    if (!selectedDistrictOrProvinceTrend) {
+      toast.error('Please select a district or province');
+      return false;
+    }
+    
+    if (!selectedStartMonth || !selectedStartYear || !selectedEndMonth || !selectedEndYear) {
+      toast.error('Please select start and end dates');
+      return false;
+    }
+    
+    if (selectedDataTypes.length === 0) {
+      toast.error('Please select at least one data type');
+      return false;
+    }
+    
+    // Validate time range
+    const startMonthIndex = months.indexOf(selectedStartMonth);
+    const endMonthIndex = months.indexOf(selectedEndMonth);
+    const startDate = new Date(selectedStartYear, startMonthIndex);
+    const endDate = new Date(selectedEndYear, endMonthIndex);
+    
+    if (startDate > endDate) {
+      toast.error('Start date must be before end date');
+      return false;
+    }
+    
+    // Check if valid combination
+    const selectedProvince = selectedRegionTrend === 'province' 
+      ? selectedDistrictOrProvinceTrend 
+      : districts.find(d => d.name === selectedDistrictOrProvinceTrend)?.province;
+    
+    if (selectedProvince === 'Sindh' && 
+        !(selectedStartMonth === 'January' && selectedEndMonth === 'April' && selectedStartYear === '2025' && selectedEndYear === '2025')) {
+      toast.error('Only January-April 2025 data is available for Sindh');
+      return false;
+    }
+    
+    // Validate date ranges
+    const isWinterRange = selectedStartMonth === 'January' && selectedEndMonth === 'April';
+    const isSummerRange = selectedStartMonth === 'June' && selectedEndMonth === 'December';
+    
+    if (!isWinterRange && !isSummerRange) {
+      toast.error('Only January-April and June-December date ranges are supported');
+      return false;
+    }
+    
+    if (isWinterRange && (selectedStartYear !== '2025' || selectedEndYear !== '2025')) {
+      toast.error('Winter Season data is only available for 2025');
+      return false;
+    }
+    
+    if (isSummerRange && (selectedStartYear !== '2024' || selectedEndYear !== '2024')) {
+      toast.error('Summer Season data is only available for 2024');
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Can the district/province select summer season?
+  const canSelectSummerSeason = (regionType, selection) => {
+    if (!selection) return false;
+    
+    if (regionType === 'province') {
+      return selection === 'Punjab';
+    } else {
+      const district = districts.find(d => d.name === selection);
+      return district && district.province === 'Punjab';
+    }
   };
 
   return (
@@ -55,105 +448,115 @@ export default function Download() {
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 2, height: "100%" }}>
               <Typography variant="h6" gutterBottom>
-                Download Image Data
+                Download Image Data (PNG)
               </Typography>
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="region-select-label">Select Region</InputLabel>
+                <InputLabel id="region-img-select-label">Select Region</InputLabel>
                 <Select
-                  labelId="region-select-label"
-                  value={selectedRegion}
+                  labelId="region-img-select-label"
+                  value={selectedRegionImg}
                   label="Select Region"
-                  onChange={(e) => setSelectedRegion(e.target.value)}
+                  onChange={handleRegionChangeImg}
                 >
                   <MenuItem value="district">District</MenuItem>
                   <MenuItem value="province">Province</MenuItem>
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="district-or-province-select-label">Select District/Province</InputLabel>
+                <InputLabel id="district-or-province-img-select-label">Select District/Province</InputLabel>
                 <Select
-                  labelId="district-or-province-select-label"
-                  value={selectedDistrictOrProvince}
+                  labelId="district-or-province-img-select-label"
+                  value={selectedDistrictOrProvinceImg}
                   label="Select District/Province"
-                  onChange={(e) => setSelectedDistrictOrProvince(e.target.value)}
+                  onChange={handleDistrictOrProvinceChangeImg}
+                  disabled={!selectedRegionImg}
                 >
-                  {(selectedRegion === 'district' ? districts : provinces).map((item) => (
-                    <MenuItem key={item} value={item}>{item}</MenuItem>
-                  ))}
+                  {selectedRegionImg === 'district' ? 
+                    districts.map((item) => (
+                      <MenuItem key={item.name} value={item.name}>{item.province} - {item.name}</MenuItem>
+                    )) : 
+                    provinces.map((province) => (
+                      <MenuItem key={province} value={province}>{province}</MenuItem>
+                    ))
+                  }
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="month-select-label">Select Month</InputLabel>
+                <InputLabel id="season-img-select-label">Select Season</InputLabel>
                 <Select
-                  labelId="month-select-label"
-                  value={selectedMonth}
-                  label="Select Month"
-                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  labelId="season-img-select-label"
+                  value={selectedSeason}
+                  label="Select Season"
+                  onChange={handleSeasonChangeImg}
+                  disabled={!selectedDistrictOrProvinceImg}
                 >
-                  {months.map((month) => (
-                    <MenuItem key={month} value={month}>{month}</MenuItem>
-                  ))}
+                  <MenuItem value="Winter Season (January to May)">Winter Season (January to May)</MenuItem>
+                  {canSelectSummerSeason(selectedRegionImg, selectedDistrictOrProvinceImg) && (
+                    <MenuItem value="Summer Season (June to December)">Summer Season (June to December)</MenuItem>
+                  )}
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="year-select-label">Select Year</InputLabel>
+                <InputLabel id="year-img-select-label">Select Year</InputLabel>
                 <Select
-                  labelId="year-select-label"
+                  labelId="year-img-select-label"
                   value={selectedYear}
                   label="Select Year"
                   onChange={(e) => setSelectedYear(e.target.value)}
+                  disabled={!selectedSeason}
                 >
-                  {years.map((year) => (
-                    <MenuItem key={year} value={year}>{year}</MenuItem>
-                  ))}
+                  {selectedSeason === 'Winter Season (January to May)' ? (
+                    <MenuItem value="2025">2025</MenuItem>
+                  ) : selectedSeason === 'Summer Season (June to December)' ? (
+                    <MenuItem value="2024">2024</MenuItem>
+                  ) : null}
                 </Select>
               </FormControl>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="file-format-select-label">Select File Format</InputLabel>
-                <Select
-                  labelId="file-format-select-label"
-                  value={selectedFileFormat}
-                  label="Select File Format"
-                  onChange={(e) => setSelectedFileFormat(e.target.value)}
-                >
-                  {fileFormats.map((format) => (
-                    <MenuItem key={format} value={format}>{format}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Button variant="contained" color="primary" onClick={handleDownloadImageData}>
-                Download Image Data
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleDownloadImageData}
+                disabled={loadingImg}
+                startIcon={loadingImg ? <CircularProgress size={20} /> : null}
+              >
+                {loadingImg ? 'Downloading...' : 'Download PNG Image'}
               </Button>
             </Paper>
           </Grid>
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
-                Download Trends Data
+                Download Trends Data (JSON)
               </Typography>
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="region-select-label">Select Region</InputLabel>
+                <InputLabel id="region-trend-select-label">Select Region</InputLabel>
                 <Select
-                  labelId="region-select-label"
-                  value={selectedRegion}
+                  labelId="region-trend-select-label"
+                  value={selectedRegionTrend}
                   label="Select Region"
-                  onChange={(e) => setSelectedRegion(e.target.value)}
+                  onChange={handleRegionChangeTrend}
                 >
                   <MenuItem value="district">District</MenuItem>
                   <MenuItem value="province">Province</MenuItem>
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="district-or-province-select-label">Select District/Province</InputLabel>
+                <InputLabel id="district-or-province-trend-select-label">Select District/Province</InputLabel>
                 <Select
-                  labelId="district-or-province-select-label"
-                  value={selectedDistrictOrProvince}
+                  labelId="district-or-province-trend-select-label"
+                  value={selectedDistrictOrProvinceTrend}
                   label="Select District/Province"
-                  onChange={(e) => setSelectedDistrictOrProvince(e.target.value)}
+                  onChange={handleDistrictOrProvinceChangeTrend}
+                  disabled={!selectedRegionTrend}
                 >
-                  {(selectedRegion === 'district' ? districts : provinces).map((item) => (
-                    <MenuItem key={item} value={item}>{item}</MenuItem>
-                  ))}
+                  {selectedRegionTrend === 'district' ? 
+                    districts.map((item) => (
+                      <MenuItem key={item.name} value={item.name}>{item.province} - {item.name}</MenuItem>
+                    )) : 
+                    provinces.map((province) => (
+                      <MenuItem key={province} value={province}>{province}</MenuItem>
+                    ))
+                  }
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
@@ -163,10 +566,12 @@ export default function Download() {
                   value={selectedStartMonth}
                   label="Select Start Month"
                   onChange={(e) => setSelectedStartMonth(e.target.value)}
+                  disabled={!selectedDistrictOrProvinceTrend}
                 >
-                  {months.map((month) => (
-                    <MenuItem key={month} value={month}>{month}</MenuItem>
-                  ))}
+                  <MenuItem value="January">January</MenuItem>
+                  {canSelectSummerSeason(selectedRegionTrend, selectedDistrictOrProvinceTrend) && (
+                    <MenuItem value="June">June</MenuItem>
+                  )}
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
@@ -176,10 +581,13 @@ export default function Download() {
                   value={selectedStartYear}
                   label="Select Start Year"
                   onChange={(e) => setSelectedStartYear(e.target.value)}
+                  disabled={!selectedStartMonth}
                 >
-                  {years.map((year) => (
-                    <MenuItem key={year} value={year}>{year}</MenuItem>
-                  ))}
+                  {selectedStartMonth === 'January' ? (
+                    <MenuItem value="2025">2025</MenuItem>
+                  ) : selectedStartMonth === 'June' ? (
+                    <MenuItem value="2024">2024</MenuItem>
+                  ) : null}
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
@@ -189,10 +597,13 @@ export default function Download() {
                   value={selectedEndMonth}
                   label="Select End Month"
                   onChange={(e) => setSelectedEndMonth(e.target.value)}
+                  disabled={!selectedStartYear}
                 >
-                  {months.map((month) => (
-                    <MenuItem key={month} value={month}>{month}</MenuItem>
-                  ))}
+                  {selectedStartMonth === 'January' ? (
+                    <MenuItem value="April">April</MenuItem>
+                  ) : selectedStartMonth === 'June' ? (
+                    <MenuItem value="December">December</MenuItem>
+                  ) : null}
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
@@ -202,10 +613,13 @@ export default function Download() {
                   value={selectedEndYear}
                   label="Select End Year"
                   onChange={(e) => setSelectedEndYear(e.target.value)}
+                  disabled={!selectedEndMonth}
                 >
-                  {years.map((year) => (
-                    <MenuItem key={year} value={year}>{year}</MenuItem>
-                  ))}
+                  {selectedEndMonth === 'April' ? (
+                    <MenuItem value="2025">2025</MenuItem>
+                  ) : selectedEndMonth === 'December' ? (
+                    <MenuItem value="2024">2024</MenuItem>
+                  ) : null}
                 </Select>
               </FormControl>
               <FormControl fullWidth sx={{ mb: 2 }}>
@@ -222,59 +636,51 @@ export default function Download() {
                   ))}
                 </Select>
               </FormControl>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel id="data-format-select-label">Select Data Format</InputLabel>
-                <Select
-                  labelId="data-format-select-label"
-                  value={selectedDataFormat}
-                  label="Select Data Format"
-                  onChange={(e) => setSelectedDataFormat(e.target.value)}
-                >
-                  {dataFormats.map((format) => (
-                    <MenuItem key={format} value={format}>{format}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Button variant="contained" color="primary" onClick={handleDownloadTrendsData}>
-                Download Trends Data
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleDownloadTrendsData}
+                disabled={loadingTrend}
+                startIcon={loadingTrend ? <CircularProgress size={20} /> : null}
+              >
+                {loadingTrend ? 'Downloading...' : 'Download JSON Data'}
               </Button>
             </Paper>
           </Grid>
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
-                Explanation of Data Formats
+                About the Data Files
               </Typography>
               <Typography variant="body1" gutterBottom>
-                GeoTIFF is a format for encoding raster graphics data, including georeferencing information. It is commonly used for satellite imagery and other geospatial data.
+                <b>PNG Files:</b> Satellite imagery showing crop and land usage patterns. These can be opened in any image viewer or editing software.
               </Typography>
               <Typography variant="body1" gutterBottom>
-                PNG is a raster-graphics file format that supports lossless data compression. It is commonly used for images on the web.
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write, and easy for machines to parse and generate.
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                CSV (Comma-Separated Values) is a simple file format used to store tabular data, such as a spreadsheet or database.
+                <b>JSON Files:</b> Structured data containing detailed land use and crop type information, which can be imported into data analysis tools or opened in text editors.
               </Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
-                Use Cases for Different Data Formats
+                Available Data
+              </Typography>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mt: 1 }}>Punjab:</Typography>
+              <Typography variant="body1" gutterBottom>
+                • Winter Season (January to April) 2025
               </Typography>
               <Typography variant="body1" gutterBottom>
-                GeoTIFF is ideal for detailed geospatial analysis and is commonly used in GIS applications.
+                • Summer Season (June to December) 2024
               </Typography>
+              
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mt: 2 }}>Sindh:</Typography>
               <Typography variant="body1" gutterBottom>
-                PNG is suitable for web applications and visual presentations where high-quality images are required.
+                • Winter Season (January to April) 2025 only
               </Typography>
-              <Typography variant="body1" gutterBottom>
-                JSON is great for web APIs and data interchange between servers and web applications.
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                CSV is perfect for data analysis and manipulation in spreadsheet software like Microsoft Excel or Google Sheets.
+              
+              <Typography variant="body1" sx={{ mt: 2, fontStyle: 'italic' }}>
+                Note: The system will automatically adjust available options based on your region selection.
+                Data is limited to specific time periods for each region.
               </Typography>
             </Paper>
           </Grid>

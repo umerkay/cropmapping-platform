@@ -1,7 +1,7 @@
 const data = {
     faisalabad: {
         area: {
-            district: "5,857 km2 (2,261 sq mi)"
+            district: "5,857 km2 (1,447,040 acres)"
         },
         elevation: "186 m (610 ft)",
         population: {
@@ -20,7 +20,7 @@ const data = {
     },
     multan: {
         area: {
-            total: "3,720 km2 (1,440 sq mi)"
+            total: "3,720 km2 (921,600 acres)"
         },
         population: {
             total: "5,362,305",
@@ -36,7 +36,7 @@ const data = {
     },
     bahawalnagar: {
         area: {
-            district: "8,878 km2 (3,428 sq mi)"
+            district: "8,878 km2 (2,193,920 acres)"
         },
         population: {
             district: "3,550,342",
