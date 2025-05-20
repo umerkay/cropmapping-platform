@@ -10,7 +10,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { LineChart } from '@mui/x-charts/LineChart';
 import { Link } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import { useTheme } from '@mui/material/styles';
@@ -18,6 +17,11 @@ import { useTheme } from '@mui/material/styles';
 const provinceData = {
   Punjab: { cropLandAcres: 11766520, wheatAcres: 6910129, cottonAcres: 1495267, otherCropsAcres: 4856391.5 },
   Sindh: { cropLandAcres: 5502436, wheatAcres: 1551068.5, cottonAcres: 448241, otherCropsAcres: 3951368.0 },
+};
+
+const landUseData = {
+  Punjab: { Natural: 1631762, UrbanBarren: 38595404 },
+  Sindh: { Natural: 1362048, UrbanBarren: 63049902 }
 };
 
 const topWheatDistricts = [
@@ -134,13 +138,13 @@ export default function Insights() {
         <Grid item xs={4}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Yearly Production by Province
+              Land Use Data by Province
             </Typography>
-            <LineChart
-              xAxis={[{ scaleType: 'band', data: ['2019', '2020', '2021', '2022', '2023', '2024'] }]}
+            <BarChart
+              xAxis={[{ scaleType: 'band', data: ['Punjab', 'Sindh'] }]}
               series={[
-                { data: yearlyProductionData.Punjab, label: 'Punjab', style: { strokeDasharray: '0' } },
-                { data: yearlyProductionData.Sindh, label: 'Sindh', style: { strokeDasharray: '0' } },
+                { data: [landUseData.Punjab.Natural, landUseData.Sindh.Natural], label: 'Natural' },
+                { data: [landUseData.Punjab.UrbanBarren, landUseData.Sindh.UrbanBarren], label: 'Urban/Barren' },
               ]}
               height={400}
             />
