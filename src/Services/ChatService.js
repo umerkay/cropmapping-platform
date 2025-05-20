@@ -1,4 +1,4 @@
-const API_URL = "http://185.154.158.212:8000/chat";
+const API_URL = "http://localhost:8000/chat";
 const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtbC10ZWFtIiwiaWF0IjoxNzMyODE0ODg2LCJleHAiOjE3NDA1OTA4ODYsImp0aSI6ImQ1NzI3YWU4YTEyMmJhNjcwZTc4MDMyNWI4Y2E5MmY5Iiwicm9sZSI6ImFkbWluIn0.DYR6roeo8YiEDUAvcVZGHY5sYcY5yzpTPuuqLxcZ8Wc";
 
 export async function sendMessage(userInput, conversationId, setMessages, toolUse, setToolUse) {
