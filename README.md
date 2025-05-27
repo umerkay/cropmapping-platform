@@ -4,6 +4,7 @@ This is the frontend for the Crop Mapping Platform, built with React and Vite
 
 ## Getting Started 
 
+
 ### Prerequisites
 
 Make sure you have the following installed:
