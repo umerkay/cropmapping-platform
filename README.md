@@ -1,4 +1,4 @@
-# Crop Mapping Platform Frontend
+# Crop Mapping Platform Frontend 
  
 This is the frontend for the Crop Mapping Platform, built with React and Vite
 
