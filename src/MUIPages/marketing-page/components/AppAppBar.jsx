@@ -80,11 +80,11 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Link to={'/signin'}>
+            {/* <Link to={'/signin'}>
             <Button color="primary" variant="text" size="small">
               Sign in
             </Button>
-            </Link>
+            </Link> */}
             <ColorModeIconDropdown />
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
@@ -121,13 +121,13 @@ export default function AppAppBar() {
                 <MenuItem>FAQ</MenuItem>
                 <MenuItem>Blog</MenuItem>
                 <Divider sx={{ my: 3 }} />
-                <MenuItem>
+                {/* <MenuItem>
                 <Link to={'/signin'}>
                   <Button color="primary" variant="outlined" fullWidth>
                     Sign in
                   </Button>
                 </Link>
-                </MenuItem>
+                </MenuItem> */}
               </Box>
             </Drawer>
           </Box>

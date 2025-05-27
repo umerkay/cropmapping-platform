@@ -31,7 +31,7 @@ export default function MarketingPage(props) {
         {/* <Divider /> */}
         {/* <FAQ /> */}
         <Divider />
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </AppTheme>
   );

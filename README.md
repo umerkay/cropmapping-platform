@@ -31,7 +31,7 @@ Make sure you have the following installed:
 Create a `.env.development` file in the root directory and set the following environment variables:
 
 ```bash
-VITE_API_URL=https://860rscpq-5000.inc1.devtunnels.ms/
+VITE_API_URL=https://umerkk164-cropmapping-server.hf.space/
 VITE_GOOGLE_MAPS=maps_api_key
 ```
 

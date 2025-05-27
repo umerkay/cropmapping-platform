@@ -184,7 +184,7 @@ export default function DistrictView({ setAppendMessage }) {
       // Map season labels to file name format
       const seasonFileFormat = selectedSeason === 'Winter Season (January to May)' ? 'Jan-Apr' : 'Jun-Dec';
       let districtName = selectedPolygon.properties.NAME_3;
-      districtName = districtName.replace(/ /g, "_").toLowerCase();
+      districtName = districtName.replace(/ /g, "_");
       const fileName = `${seasonFileFormat}_${selectedYear}_${districtName}.json`;
       
       fetchGraphData(fileName)

@@ -2,15 +2,9 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import InputLabel from '@mui/material/InputLabel';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import visuallyHidden from '@mui/utils/visuallyHidden';
-import Sitemark from './SitemarkIcon';
 import { styled } from '@mui/material/styles';
-import Globe from 'react-globe.gl';
 import imggg from '../../../assets/pexels-pixabay-87651.jpg';
 import dashboardLight from '../../../assets/dashboard_light.jpg';
 import dashboardDark from '../../../assets/dashboard_dark.jpg';
@@ -125,8 +119,26 @@ export default function Hero() {
               width: { sm: '100%', md: '40%' },
             }}
           >
-          Gain deep agricultural insights with AgroData—a powerful analytics platform for policymakers and stakeholders. Leverage AI-driven predictions with Zarai Rahnuma, your smart agriculture guide, to make informed decisions for a sustainable future. Explore production trends, district-level insights, and AI-powered analysis—all in one place.
+          Gain deep agricultural insights with AgroData—a powerful analytics platform for policymakers and stakeholders. Leverage AI-driven predictions with Zarai Rahnuma, your smart agriculture guide, to make informed decisions for a sustainable future. Explore production trends, district-level insights, and AI-powered analysis—all in one place.
           </Typography>
+          
+          <Button 
+            variant="contained"
+            size="large"
+            href="/dashboard"
+            sx={{
+              mt: 3,
+              py: 1.5,
+              px: 4,
+              fontSize: '1.2rem',
+              fontWeight: 'bold',
+              color: "white !important",
+              // boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            Dashboard
+          </Button>
+          
           <Box
             sx={{
               position: 'absolute',

@@ -262,7 +262,7 @@ export default function Download() {
       
       // Construct the file URL for JSON
       // const fileUrl = `${API_BASE_URL}/data/${seasonFormat}_${year}_${regionName}.json`;
-      const fileUrl = `http://localhost:8000/files/json/${seasonFormat}_${year}_${regionName}.json`;
+      const fileUrl = `https://umerkk164-agro-chatbot.hf.space/files/json/${seasonFormat}_${year}_${regionName}.json`;
       
       // Attempt to download the file
       const response = await fetch(fileUrl);

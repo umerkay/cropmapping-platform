@@ -26,6 +26,3 @@ dist-ssr
 .env
 
 # Ignore specific PNG files
-public/Jan-Apr_2025_Punjab.png
-public/Jan-Apr_2025_Sindh.png
-public/Jun-Dec_2024_Punjab.png

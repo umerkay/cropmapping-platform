@@ -26,10 +26,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<MarketingPage />} />
-          <Route path="/signin" element={<SignInSide />} />
-          <Route path="/signup" element={<SignUpSide />} />
-          <Route path="/dashboard" element={authenticated ? <Dashboard /> : <Navigate to="/signin" />} />
-          <Route path="/map" element={authenticated ? <MapComponent mode={mode} setMode={setMode} /> : <Navigate to="/signin" />} />
+          {/* <Route path="/signin" element={<SignInSide />} /> */}
+          {/* <Route path="/signup" element={<SignUpSide />} /> */}
+          <Route path="/dashboard" element={authenticated ? <Dashboard /> : <Navigate to="/dashboard?view=Insights" />} />
+          {/* <Route path="/map" element={authenticated ? <MapComponent mode={mode} setMode={setMode} /> : <Navigate to="/dashboard?view=Insights" />} /> */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
