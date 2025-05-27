@@ -31,7 +31,7 @@ function DashboardMap({ selectedPolygon, selectedSeason, selectedYear, loadReque
 
   useEffect(() => {
     if (selectedPolygon) {
-      // Clear previous overlays when new polygon is selected
+      // Clear previous overlays when new polygon is selectedF
       clearOverlays();
       
       const bounds = new window.google.maps.LatLngBounds();

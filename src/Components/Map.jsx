@@ -30,7 +30,7 @@ function App({ mode, setMode }) {
 
   // Fetch the GeoJSON data and list of polygons
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}api/geojson`)
+    fetch(`/districts.json`)
       .then((response) => response.json())
       .then((data) => {
         setPolygons(data.polygons);

@@ -11,16 +11,24 @@ export const PolygonsProvider = ({ children }) => {
   const [districtGeojsonData, setDistrictGeojsonData] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}api/geojson?level=provinces`)
+    // Load provinces GeoJSON from local file
+    fetch('/provinces.json')
       .then((response) => response.json())
       .then((data) => {
         setProvinceGeojsonData(data.geojson);
+      })
+      .catch((error) => {
+        console.error("Error loading provinces GeoJSON:", error);
       });
 
-    fetch(`${import.meta.env.VITE_API_URL}api/geojson`)
+    // Load districts GeoJSON from local file
+    fetch('/districts.json')
       .then((response) => response.json())
       .then((data) => {
         setDistrictGeojsonData(data.geojson);
+      })
+      .catch((error) => {
+        console.error("Error loading districts GeoJSON:", error);
       });
   }, []);
 
