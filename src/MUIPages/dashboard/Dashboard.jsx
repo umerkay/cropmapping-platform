@@ -48,7 +48,7 @@ const menuItems = [
   // { text: "Overview", icon: <HomeIcon />, path: "Overview" },
   { text: "Insights", icon: <InsightsIcon />, path: "Insights" },
   { text: "District View", icon: <MapIcon />, path: "District" },
-  { text: "Province View", icon: <MapIcon />, path: "Province" },
+  // { text: "Province View", icon: <MapIcon />, path: "Province" },
   { text: "Download", icon: <DownloadIcon />, path: "Download" },
   { text: "Zarai Rehnuma (AI)", icon: <AiIcon />, path: "AgroAI" },
 ];

@@ -27,7 +27,7 @@ import Logo from './Logo'; // Assuming you have a Logo component
 const menuItems = [
   { text: 'Overview', icon: <HomeIcon />, path: 'Overview' },
   { text: 'District View', icon: <MapIcon />, path: 'District' },
-  { text: 'Province View', icon: <MapIcon />, path: 'Province' },
+  // { text: 'Province View', icon: <MapIcon />, path: 'Province' },
   { text: 'Insights', icon: <InsightsIcon />, path: 'Insights' },
   { text: 'Download', icon: <DownloadIcon />, path: 'Download' },
   { text: 'Zarai Rehnuma (AI)', icon: <AiIcon />, path: 'AgroAI' },
