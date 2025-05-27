@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 import imggg from '../../../assets/pexels-pixabay-87651.jpg';
 import dashboardLight from '../../../assets/dashboard_light.jpg';
 import dashboardDark from '../../../assets/dashboard_dark.jpg';
@@ -125,7 +126,8 @@ export default function Hero() {
           <Button 
             variant="contained"
             size="large"
-            href="/dashboard"
+            component={Link}
+            to="/dashboard"
             sx={{
               mt: 3,
               py: 1.5,
