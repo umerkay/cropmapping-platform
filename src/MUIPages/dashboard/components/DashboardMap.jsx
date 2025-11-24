@@ -173,7 +173,7 @@ function DashboardMap({ selectedPolygon, selectedSeason, selectedYear, loadReque
           boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
         }}
       >
-        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, color: "black" }}>
           ⚠ Labels are large files and may take 1–2 minutes to load after selecting season and location.
         </Typography>
       </Box>
